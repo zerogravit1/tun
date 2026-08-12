@@ -99,6 +99,73 @@ The output should emphasize decisions and deltas rather than raw test counts.
 - DAB-native endpoint or DAB-to-ADB bridge
 - demonstrate that Tun orchestration does not need device-specific changes
 
+## Deferred design directions
+
+These ideas are intentionally captured now without expanding Phase 1 scope.
+
+### Hardware and performance profiles
+
+Avoid treating `slow` as a device status. Operational status should answer whether Tun can use a device now; performance describes how the device behaves.
+
+A future device model should separate durable hardware characteristics from measured performance. Potential hardware dimensions include:
+
+- manufacturer, model, and model year
+- chipset, CPU, GPU, and memory
+- hardware and board revision
+- manufacture date or batch
+- firmware / platform version
+
+A future `DevicePerformanceProfile` may include:
+
+- coarse performance class such as `low | mid | high`
+- CPU / GPU benchmark scores
+- launch baseline
+- playback startup baseline
+- timestamp of the most recent benchmark
+
+This separation should allow Tun to identify regressions associated with a particular chipset, hardware revision, manufacturing cohort, or other low-level characteristic even when consumer-facing model names are identical.
+
+### Derived device cohorts
+
+Cohorts should eventually be derived from device attributes rather than maintained only as static device lists.
+
+Examples include:
+
+- manufacturer + model + model year
+- chipset + hardware revision
+- manufacture month / batch
+- firmware version
+- memory tier
+- performance class
+
+The scheduler and comparison engine should be able to use these cohorts both for representative device selection and for identifying regressions hidden by fleet-wide averages.
+
+### Software and configuration provenance
+
+The hardware device alone may not explain the experience under test. Tun should eventually capture where the running behavior came from, including dimensions such as:
+
+- installed application build / version
+- client runtime or SDK version
+- firmware / OS version
+- server-driven UI schema, bundle, or configuration revision when observable
+- feature flags
+- experiment / treatment assignment
+- device-specific renderer or implementation version when observable
+
+The goal is to distinguish failures caused by hardware from those caused by a particular client implementation, software build, server-provided configuration, or combination of these factors.
+
+### Immutable execution context
+
+Each evaluation result should eventually retain a snapshot of the environment that produced it instead of relying only on the device's current state.
+
+This execution context should make historical results explainable and reproducible after firmware, app versions, UI configuration, feature flags, or experiment assignments have changed.
+
+Conceptually, Tun should be able to answer:
+
+> What combination of hardware, software, configuration, and measured performance produced this result?
+
+These directions are expected to become more concrete during the telemetry and comparative-evaluation phases rather than being fully implemented in the initial virtual-fleet work.
+
 ## Deferred
 
 Do not build these until the earlier phases justify them:
