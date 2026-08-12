@@ -1,0 +1,33 @@
+{
+  "name": "tun",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deverloper-first device quality and evaluation platform",
+  "type": "module",
+  "homepage": "https://github.com/zerogravit1/tun#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zerogravit1/tun.git"
+  },
+  "author": "Jonathan Schaffer",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "mqtt": "^5.15.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
