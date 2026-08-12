@@ -13,6 +13,11 @@ export type DeviceKind =
   | 'game-console'
   | 'virtual';
 
+export type PerformanceClass =
+  | 'low'
+  | 'mid'
+  | 'high';
+
 export interface DeviceCapabilities {
   resolutions: string[];
   hdr: boolean;
@@ -28,6 +33,7 @@ export interface Device {
   model: string;
   firmware?: string;
   virtual: boolean;
+  performanceClass: PerformanceClass;
   capabilities: DeviceCapabilities;
   supportedOperations: string[];
   status: DeviceStatus;
