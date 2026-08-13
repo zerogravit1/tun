@@ -83,5 +83,39 @@ describe('DeviceRegistry', () => {
       hdr: 'dolby-vision',
       codec: 'av1'
     })).toHaveLength(1);
-  })
+  });
+
+  it('finds a device matching gaming requirementts', () => {
+    const registry = new DeviceRegistry();
+
+    registry.upsert(
+      device({
+        capabilities: {
+          resolutions: ['1080p', '2160p'],
+          hdrFormats: ['hdr10'],
+          codecs: ['h264', 'av1'],
+          games: true,
+          memoryMb: 1536
+        },
+      }),
+    );
+
+    expect(
+      registry.findAvailable({
+        games: true,
+      }),
+    ).toHaveLength(1);
+  });
+
+  it('finds a device matching non-gaming requirements', () => {
+    const registry = new DeviceRegistry();
+
+    registry.upsert(device());
+
+    expect(
+      registry.findAvailable({
+        games: false,
+      }),
+    ).toHaveLength(1);
+  });
 });

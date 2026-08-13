@@ -1,4 +1,4 @@
-import { Codec, HdrFormats } from "./device.js";
+import { Codec, HdrFormat } from "./device.js";
 
 export type ChangeType =
   | 'ui'
@@ -29,7 +29,7 @@ export interface EvaluationRequest {
 
 export interface WorkloadRequirements {
   platform?: string;
-  hdr?: HdrFormats;
+  hdr?: HdrFormat;
   codec?: Codec;
   games?: boolean;
   minimumMemoryMb?: number;

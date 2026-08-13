@@ -30,14 +30,14 @@ export type Codec =
   | 'av1'
   | 'vp9';
 
-export type HdrFormats =
+export type HdrFormat =
   | 'hdr10'
   | 'hdr10+'
   | 'dolby-vision';
 
 export interface DeviceCapabilities {
   resolutions: Resolution[];
-  hdrFormats: HdrFormats[];
+  hdrFormats: HdrFormat[];
   codecs: Codec[];
   games: boolean;
   memoryMb?: number;
