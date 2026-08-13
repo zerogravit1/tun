@@ -8,6 +8,7 @@ const device = (overrides: Partial<Device> = {}): Device => ({
   platform: 'test-platform',
   model: 'reference',
   virtual: true,
+  performanceClass: 'mid',
   capabilities: {
     resolutions: ['1080p', '2160p'],
     hdr: true,

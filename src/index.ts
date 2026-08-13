@@ -8,6 +8,7 @@ registry.upsert({
   platform: 'virtual-tv',
   model: 'tun-reference',
   virtual: true,
+  performanceClass: 'mid',
   capabilities: {
     resolutions: ['1080p', '2160p'],
     hdr: true,
