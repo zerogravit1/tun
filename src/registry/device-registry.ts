@@ -37,7 +37,7 @@ export class DeviceRegistry {
       ) return false;
 
       if (
-        requirements.games &&
+        requirements.games !== undefined &&
         device.capabilities.games !== requirements.games
       ) return false;
 

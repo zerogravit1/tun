@@ -110,12 +110,33 @@ describe('DeviceRegistry', () => {
   it('finds a device matching non-gaming requirements', () => {
     const registry = new DeviceRegistry();
 
-    registry.upsert(device());
-
-    expect(
-      registry.findAvailable({
+    registry.upsert(device({
+      id: 'non-gaming-tv',
+      capabilities: {
+        resolutions: ['1080p'],
+        hdrFormats: [],
+        codecs: ['h264'],
         games: false,
-      }),
-    ).toHaveLength(1);
+        memoryMb: 1024
+      }
+    }));
+
+    registry.upsert(device({
+      id: 'gaming-tv',
+      capabilities: {
+        resolutions: ['1080p'],
+        hdrFormats: [],
+        codecs: ['h264'],
+        games: true,
+        memoryMb: 1024
+      }
+    }));
+
+    const results = registry.findAvailable({
+      games: false,
+    });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]?.id).toBe('non-gaming-tv');
   });
 });
