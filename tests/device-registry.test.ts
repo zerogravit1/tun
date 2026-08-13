@@ -11,10 +11,10 @@ const device = (overrides: Partial<Device> = {}): Device => ({
   performanceClass: 'mid',
   capabilities: {
     resolutions: ['1080p', '2160p'],
-    hdr: true,
+    hdrFormats: ['hdr10'],
     codecs: ['h264', 'av1'],
     games: false,
-    memoryMb: 1024,
+    memoryMb: 1536,
   },
   supportedOperations: ['device/info', 'health-check/get'],
   status: 'available',
@@ -29,7 +29,7 @@ describe('DeviceRegistry', () => {
 
     expect(
       registry.findAvailable({
-        hdr: true,
+        hdr: 'hdr10',
         codec: 'av1',
         requiredOperations: ['health-check/get'],
       }),

@@ -20,10 +20,26 @@ export class DeviceRegistry {
   findAvailable(requirements: WorkloadRequirements): Device[] {
     return this.list().filter((device) => {
       if (device.status !== 'available') return false;
-      if (requirements.platform && device.platform !== requirements.platform) return false;
-      if (requirements.hdr !== undefined && device.capabilities.hdr !== requirements.hdr) return false;
-      if (requirements.codec && !device.capabilities.codecs.includes(requirements.codec)) return false;
-      if (requirements.games !== undefined && device.capabilities.games !== requirements.games) return false;
+      
+      if (
+        requirements.platform &&
+        device.platform !== requirements.platform
+      ) return false;
+
+      if (
+        requirements.hdr &&
+        !device.capabilities.hdrFormats.includes(requirements.hdr)
+      ) return false;
+
+      if (
+        requirements.codec &&
+        !device.capabilities.codecs.includes(requirements.codec)
+      ) return false;
+
+      if (
+        requirements.games &&
+        !device.capabilities.games !== requirements.games
+      ) return false;
 
       if (
         requirements.minimumMemoryMb !== undefined &&

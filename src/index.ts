@@ -4,14 +4,14 @@ const registry = new DeviceRegistry();
 
 registry.upsert({
   id: 'virtual-tv-001',
-  kind: 'virtual',
+  kind: 'tv',
   platform: 'virtual-tv',
   model: 'tun-reference',
   virtual: true,
   performanceClass: 'mid',
   capabilities: {
     resolutions: ['1080p', '2160p'],
-    hdr: true,
+    hdrFormats: ['hdr10'],
     codecs: ['h264', 'hevc', 'av1'],
     games: true,
     memoryMb: 2048,
