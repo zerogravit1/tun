@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { Device } from '../src/domain/device.js';
 import { DeviceRegistry } from '../src/registry/device-registry.js';
 
+import { virtualFleet } from '../src/fleet/virtual-fleet.js';
+
 const device = (overrides: Partial<Device> = {}): Device => ({
   id: 'tv-001',
   kind: 'tv',
@@ -66,4 +68,20 @@ describe('DeviceRegistry', () => {
     expect(registry.findAvailable({})).toHaveLength(0);
     expect(registry.get('tv-001')?.status).toBe('quarantined');
   });
+
+  it('finds a device from the virtual fleet', () => {
+    const registry = new DeviceRegistry()
+
+    for (const device of virtualFleet) {
+      registry.upsert(device);
+    }
+
+    expect(registry.findAvailable({ codec: 'av1' }).length).toBeGreaterThan(0);
+    expect(registry.findAvailable({ hdr: 'dolby-vision'}).length).toBeGreaterThan(0);
+    expect(registry.findAvailable({
+      platform: 'roku',
+      hdr: 'dolby-vision',
+      codec: 'av1'
+    })).toHaveLength(1);
+  })
 });
