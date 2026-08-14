@@ -11,17 +11,34 @@ export type DeviceKind =
   | 'set-top-box'
   | 'streaming-stick'
   | 'game-console'
-  | 'virtual';
+  | 'browser';
 
 export type PerformanceClass =
   | 'low'
   | 'mid'
   | 'high';
 
+export type Resolution =
+  | '720p'
+  | '1080p'
+  | '2160p'
+  | '4320p';
+
+export type Codec =
+  | 'h264'
+  | 'hevc'
+  | 'av1'
+  | 'vp9';
+
+export type HdrFormat =
+  | 'hdr10'
+  | 'hdr10+'
+  | 'dolby-vision';
+
 export interface DeviceCapabilities {
-  resolutions: string[];
-  hdr: boolean;
-  codecs: string[];
+  resolutions: Resolution[];
+  hdrFormats: HdrFormat[];
+  codecs: Codec[];
   games: boolean;
   memoryMb?: number;
 }

@@ -1,3 +1,5 @@
+import { Codec, HdrFormat } from "./device.js";
+
 export type ChangeType =
   | 'ui'
   | 'playback'
@@ -27,8 +29,8 @@ export interface EvaluationRequest {
 
 export interface WorkloadRequirements {
   platform?: string;
-  hdr?: boolean;
-  codec?: string;
+  hdr?: HdrFormat;
+  codec?: Codec;
   games?: boolean;
   minimumMemoryMb?: number;
   requiredOperations?: string[];

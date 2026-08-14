@@ -2,18 +2,21 @@ import { describe, expect, it } from 'vitest';
 import type { Device } from '../src/domain/device.js';
 import { DeviceRegistry } from '../src/registry/device-registry.js';
 
+import { virtualFleet } from '../src/fleet/virtual-fleet.js';
+
 const device = (overrides: Partial<Device> = {}): Device => ({
   id: 'tv-001',
   kind: 'tv',
   platform: 'test-platform',
   model: 'reference',
   virtual: true,
+  performanceClass: 'mid',
   capabilities: {
     resolutions: ['1080p', '2160p'],
-    hdr: true,
+    hdrFormats: ['hdr10'],
     codecs: ['h264', 'av1'],
     games: false,
-    memoryMb: 1024,
+    memoryMb: 1536,
   },
   supportedOperations: ['device/info', 'health-check/get'],
   status: 'available',
@@ -28,7 +31,7 @@ describe('DeviceRegistry', () => {
 
     expect(
       registry.findAvailable({
-        hdr: true,
+        hdr: 'hdr10',
         codec: 'av1',
         requiredOperations: ['health-check/get'],
       }),
@@ -64,5 +67,76 @@ describe('DeviceRegistry', () => {
 
     expect(registry.findAvailable({})).toHaveLength(0);
     expect(registry.get('tv-001')?.status).toBe('quarantined');
+  });
+
+  it('finds a device from the virtual fleet', () => {
+    const registry = new DeviceRegistry()
+
+    for (const device of virtualFleet) {
+      registry.upsert(device);
+    }
+
+    expect(registry.findAvailable({ codec: 'av1' }).length).toBeGreaterThan(0);
+    expect(registry.findAvailable({ hdr: 'dolby-vision'}).length).toBeGreaterThan(0);
+    expect(registry.findAvailable({
+      platform: 'roku',
+      hdr: 'dolby-vision',
+      codec: 'av1'
+    })).toHaveLength(1);
+  });
+
+  it('finds a device matching gaming requirementts', () => {
+    const registry = new DeviceRegistry();
+
+    registry.upsert(
+      device({
+        capabilities: {
+          resolutions: ['1080p', '2160p'],
+          hdrFormats: ['hdr10'],
+          codecs: ['h264', 'av1'],
+          games: true,
+          memoryMb: 1536
+        },
+      }),
+    );
+
+    expect(
+      registry.findAvailable({
+        games: true,
+      }),
+    ).toHaveLength(1);
+  });
+
+  it('finds a device matching non-gaming requirements', () => {
+    const registry = new DeviceRegistry();
+
+    registry.upsert(device({
+      id: 'non-gaming-tv',
+      capabilities: {
+        resolutions: ['1080p'],
+        hdrFormats: [],
+        codecs: ['h264'],
+        games: false,
+        memoryMb: 1024
+      }
+    }));
+
+    registry.upsert(device({
+      id: 'gaming-tv',
+      capabilities: {
+        resolutions: ['1080p'],
+        hdrFormats: [],
+        codecs: ['h264'],
+        games: true,
+        memoryMb: 1024
+      }
+    }));
+
+    const results = registry.findAvailable({
+      games: false,
+    });
+
+    expect(results).toHaveLength(1);
+    expect(results[0]?.id).toBe('non-gaming-tv');
   });
 });
