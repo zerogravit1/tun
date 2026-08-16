@@ -233,4 +233,46 @@ describe('DeviceRegistry', () => {
     expect(result).toHaveLength(2);
     expect(result.map((device) => device.id)).toEqual(['tv-001', 'tv-002']);
   });
+
+  it('finds devices matching multiple cohort criteria', () => {
+    const registry = new DeviceRegistry();
+
+    registry.upsert(device({
+      id: 'roku-low',
+      kind: 'set-top-box',
+      platform: 'roku',
+      performanceClass: 'low',
+      capabilities: {
+        resolutions: ['1080p'],
+        hdrFormats: [],
+        codecs: ['h264'],
+        games: false,
+        memoryMb: 1024,
+      },
+    }));
+
+    registry.upsert(device({
+      id: 'roku-high',
+      kind: 'set-top-box',
+      platform: 'roku',
+      performanceClass: 'high',
+      capabilities: {
+        resolutions: ['1080p', '2160p'],
+        hdrFormats: ['hdr10'],
+        codecs: ['h264', 'av1'],
+        games: true,
+        memoryMb: 2048,
+      },
+    }));
+
+    const result = registry.find({
+      platform: 'roku',
+      kind: 'set-top-box',
+      performanceClass: 'high',
+      resolution: '2160p',
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.id).toBe('roku-high');
+  });
 });

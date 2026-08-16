@@ -1,7 +1,6 @@
 import { DeviceCriteria } from '../domain/device-cohort.js';
 import { allowedTransitions, type DeviceStateChangeSource, type DeviceStateTransition } from '../domain/device-state-transition.js';
 import type { Device, DeviceStatus } from '../domain/device.js';
-import type { WorkloadRequirements } from '../domain/evaluation.js';
 
 export class DeviceRegistry {
   private readonly devices = new Map<string, Device>();
