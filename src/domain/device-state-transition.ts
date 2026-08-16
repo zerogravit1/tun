@@ -17,7 +17,7 @@ export interface DeviceStateTransition {
 }
 
 export const allowedTransitions: Record<DeviceStatus, DeviceStatus[]> = {
-  available: ['unhealthy', 'offline', 'maintenance', 'reserved'],
+  available: ['unhealthy', 'offline', 'maintenance'],
   reserved: ['available', 'unhealthy', 'offline', 'quarantined'],
   unhealthy: ['available', 'offline', 'maintenance', 'quarantined'],
   offline: ['available', 'maintenance'],

@@ -181,7 +181,7 @@ describe('DeviceRegistry', () => {
     expect(registry.get(testDevice.id)?.status).toBe('quarantined');
   });
 
-  it('does not allow transitionStatus to create a reservation without an owner', () => {
+  it('requires reserve() to be used when reserving a device', () => {
     const registry = new DeviceRegistry();
 
     const testDevice = device({status: 'available'});
