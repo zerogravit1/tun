@@ -139,4 +139,65 @@ describe('DeviceRegistry', () => {
     expect(results).toHaveLength(1);
     expect(results[0]?.id).toBe('non-gaming-tv');
   });
+
+  it('transitions an unhealthy device to maintenance', () => {
+    const registry = new DeviceRegistry();
+
+    const testDevice = device({status: 'unhealthy'})
+
+    registry.upsert(testDevice);
+
+    const result = registry.transitionStatus(
+      testDevice.id,
+      'maintenance',
+      'test-pass',
+      'health-check'
+    );
+
+    expect(result.from).toBe('unhealthy');
+    expect(result.to).toBe('maintenance');
+    expect(result.reason).toBe('test-pass');
+    expect(result.source).toBe('health-check');
+
+    expect(registry.get(testDevice.id)?.status).toBe('maintenance');
+  });
+
+  it('rejects an invalid quarantined to reserved transition', () => {
+    const registry = new DeviceRegistry();
+    const testDevice = device({status: 'quarantined'})
+
+    registry.upsert(testDevice);
+
+    expect(() =>
+      registry.transitionStatus(
+        testDevice.id,
+        'reserved',
+        'test-fail',
+        'health-check',
+      ),
+    ).toThrow(
+      `Cannot transition device ${testDevice.id} from quarantined to reserved`
+    );
+    expect(registry.get(testDevice.id)?.status).toBe('quarantined');
+  });
+
+  it('requires reserve() to be used when reserving a device', () => {
+    const registry = new DeviceRegistry();
+
+    const testDevice = device({status: 'available'});
+
+    registry.upsert(testDevice);
+
+    expect(() =>
+      registry.transitionStatus(
+        testDevice.id,
+        'reserved',
+        'test',
+        'scheduler',
+      ),
+    ).toThrow();
+
+    expect(registry.get(testDevice.id)?.status).toBe('available');
+    expect(registry.get(testDevice.id)?.reservedBy).toBeUndefined();
+  });
 });

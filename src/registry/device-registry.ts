@@ -1,4 +1,5 @@
-import type { Device } from '../domain/device.js';
+import { allowedTransitions, type DeviceStateChangeSource, type DeviceStateTransition } from '../domain/device-state-transition.js';
+import type { Device, DeviceStatus } from '../domain/device.js';
 import type { WorkloadRequirements } from '../domain/evaluation.js';
 
 export class DeviceRegistry {
@@ -94,6 +95,32 @@ export class DeviceRegistry {
     delete device.reservedBy;
 
     return structuredClone(device);
+  }
+
+  transitionStatus(
+    deviceId: string,
+    to: DeviceStatus,
+    reason: string,
+    source: DeviceStateChangeSource
+  ): DeviceStateTransition {
+    const device = this.requireDevice(deviceId);
+
+    const from = device.status;
+
+    if (!allowedTransitions[from].includes(to)) {
+      throw new Error(`Cannot transition device ${deviceId} from ${from} to ${to}`);
+    }
+
+    device.status = to;
+
+    return {
+      deviceId,
+      from,
+      to,
+      changedAt: new Date().toISOString(),
+      reason,
+      source,
+    };
   }
 
   private requireDevice(deviceId: string): Device {
