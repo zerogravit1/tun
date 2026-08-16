@@ -200,4 +200,79 @@ describe('DeviceRegistry', () => {
     expect(registry.get(testDevice.id)?.status).toBe('available');
     expect(registry.get(testDevice.id)?.reservedBy).toBeUndefined();
   });
+
+  it('finds devices matching cohort criteria', () => {
+    const registry = new DeviceRegistry()
+
+    const testDevice1 = device({ id: 'tv-001', platform: 'roku' });
+    const testDevice2 = device({ id: 'tv-002', platform: 'roku' });
+    const testDevice3 = device({ id: 'tv-003', platform: 'roku' });
+
+    registry.upsert(testDevice1);
+    registry.upsert(testDevice2);
+    registry.upsert(testDevice3);
+
+    const result = registry.find({ platform: 'roku' });
+
+    expect(result).toHaveLength(3);
+  });
+
+  it('returns only available devices matching cohort criteria', () => {
+    const registry = new DeviceRegistry()
+
+    const testDevice1 = device({ id: 'tv-001', platform: 'roku', status: 'available' });
+    const testDevice2 = device({ id: 'tv-002', platform: 'roku', status: 'available' });
+    const testDevice3 = device({ id: 'tv-003', platform: 'roku', status: 'reserved' });
+
+    registry.upsert(testDevice1);
+    registry.upsert(testDevice2);
+    registry.upsert(testDevice3);
+
+    const result = registry.findAvailable({ platform: 'roku' });
+
+    expect(result).toHaveLength(2);
+    expect(result.map((device) => device.id)).toEqual(['tv-001', 'tv-002']);
+  });
+
+  it('finds devices matching multiple cohort criteria', () => {
+    const registry = new DeviceRegistry();
+
+    registry.upsert(device({
+      id: 'roku-low',
+      kind: 'set-top-box',
+      platform: 'roku',
+      performanceClass: 'low',
+      capabilities: {
+        resolutions: ['1080p'],
+        hdrFormats: [],
+        codecs: ['h264'],
+        games: false,
+        memoryMb: 1024,
+      },
+    }));
+
+    registry.upsert(device({
+      id: 'roku-high',
+      kind: 'set-top-box',
+      platform: 'roku',
+      performanceClass: 'high',
+      capabilities: {
+        resolutions: ['1080p', '2160p'],
+        hdrFormats: ['hdr10'],
+        codecs: ['h264', 'av1'],
+        games: true,
+        memoryMb: 2048,
+      },
+    }));
+
+    const result = registry.find({
+      platform: 'roku',
+      kind: 'set-top-box',
+      performanceClass: 'high',
+      resolution: '2160p',
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.id).toBe('roku-high');
+  });
 });
