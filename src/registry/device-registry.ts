@@ -1,3 +1,4 @@
+import { DeviceCriteria } from '../domain/device-cohort.js';
 import { allowedTransitions, type DeviceStateChangeSource, type DeviceStateTransition } from '../domain/device-state-transition.js';
 import type { Device, DeviceStatus } from '../domain/device.js';
 import type { WorkloadRequirements } from '../domain/evaluation.js';
@@ -18,45 +19,60 @@ export class DeviceRegistry {
     return [...this.devices.values()].map((device) => structuredClone(device));
   }
 
-  findAvailable(requirements: WorkloadRequirements): Device[] {
+  findAvailable(criteria: DeviceCriteria): Device[] {
+    return this.find(criteria).filter(
+      (device) => device.status === 'available'
+    );
+  }
+
+  find(criteria: DeviceCriteria): Device[] {
     return this.list().filter((device) => {
-      if (device.status !== 'available') return false;
-      
       if (
-        requirements.platform &&
-        device.platform !== requirements.platform
+        criteria.platform &&
+        device.platform !== criteria.platform
       ) return false;
 
       if (
-        requirements.hdr &&
-        !device.capabilities.hdrFormats.includes(requirements.hdr)
+        criteria.kind &&
+        device.kind !== criteria.kind
       ) return false;
 
       if (
-        requirements.codec &&
-        !device.capabilities.codecs.includes(requirements.codec)
+        criteria.performanceClass &&
+        device.performanceClass !== criteria.performanceClass
       ) return false;
 
       if (
-        requirements.games !== undefined &&
-        device.capabilities.games !== requirements.games
+        criteria.resolution &&
+        !device.capabilities.resolutions.includes(criteria.resolution)
       ) return false;
 
       if (
-        requirements.minimumMemoryMb !== undefined &&
-        (device.capabilities.memoryMb ?? 0) < requirements.minimumMemoryMb
-      ) {
-        return false;
-      }
+        criteria.hdr &&
+        !device.capabilities.hdrFormats.includes(criteria.hdr)
+      ) return false;
 
       if (
-        requirements.requiredOperations &&
-        !requirements.requiredOperations.every((operation) =>
+        criteria.codec &&
+        !device.capabilities.codecs.includes(criteria.codec)
+      ) return false;
+
+      if (
+        criteria.games !== undefined &&
+        device.capabilities.games !== criteria.games
+      ) return false;
+
+      if (
+        criteria.minimumMemoryMb !== undefined &&
+        (device.capabilities.memoryMb ?? 0) < criteria.minimumMemoryMb
+      ) return false;
+
+      if (
+        criteria.requiredOperations &&
+        !criteria.requiredOperations.every((operation) =>
           device.supportedOperations.includes(operation),
         )
-      ) {
-        return false;
-      }
+      ) return false;
 
       return true;
     });
