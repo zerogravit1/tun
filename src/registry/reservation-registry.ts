@@ -27,6 +27,14 @@ export class ReservationRegistry {
     const startsAt = new Date(request.startsAt)
     const expiresAt = new Date(request.expiresAt);
 
+    if (Number.isNaN(startsAt.getTime())) {
+      throw new Error(`invalid reservation startsAt: ${request.startsAt}`);
+    }
+
+    if (Number.isNaN(expiresAt.getTime())) {
+      throw new Error(`invalid reservation expiresAt: ${request.expiresAt}`);
+    }
+
     if (expiresAt <= startsAt) {
       throw new Error(`reservation expiresAt: ${request.expiresAt} cannot be before startsAt: ${request.startsAt}`);
     }
