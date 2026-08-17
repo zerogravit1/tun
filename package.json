@@ -15,6 +15,9 @@
   "author": "Jonathan Schaffer",
   "scripts": {
     "dev": "tsx src/index.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -23,8 +26,14 @@
     "mqtt": "^5.15.2"
   },
   "devDependencies": {
+    "eslint": "10.8.1",
+    "@eslint/js": "10.0.1",
+    "eslint-config-prettier": "10.1.8",
+    "globals":"17.11.0",
+    "prettier": "3.9.6",
     "@vitest/coverage-v8": "^4.1.10",
     "tsx": "^4.23.1",
+    "@types/node": "^25.6.0",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   },
