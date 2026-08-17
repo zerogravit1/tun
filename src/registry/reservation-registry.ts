@@ -2,7 +2,7 @@ import type { CreateReservationRequest, DeviceReservation, ReservationStatus } f
 import { allowedReservationTransition } from '../domain/reservation-state-transition.js';
 
 export class ReservationRegistry {
-  private readonly reservations = new Map<string, DeviceReservation>()
+  private readonly reservations = new Map<string, DeviceReservation>();
 
   create(request: CreateReservationRequest): DeviceReservation {
     if (request.requestedBy === '' || request.requestedBy === undefined) {
@@ -25,7 +25,7 @@ export class ReservationRegistry {
       throw new Error(`request minimum quantity cannot be greater than request quantity`);
     }
 
-    const startsAt = new Date(request.startsAt)
+    const startsAt = new Date(request.startsAt);
     const expiresAt = new Date(request.expiresAt);
 
     if (Number.isNaN(startsAt.getTime())) {
@@ -55,15 +55,12 @@ export class ReservationRegistry {
       expiresAt: request.expiresAt,
       priority: request.priority,
       ...(request.reason !== undefined && {
-        reason: request.reason
+        reason: request.reason,
       }),
-      status: 'scheduled'
-    }
+      status: 'scheduled',
+    };
 
-    this.reservations.set(
-      reservation.id,
-      structuredClone(reservation),
-    );
+    this.reservations.set(reservation.id, structuredClone(reservation));
 
     return structuredClone(reservation);
   }
@@ -77,10 +74,7 @@ export class ReservationRegistry {
     return [...this.reservations.values()].map((reservation) => structuredClone(reservation));
   }
 
-  transitionStatus(
-    reservationId: string,
-    to: ReservationStatus
-  ): DeviceReservation {
+  transitionStatus(reservationId: string, to: ReservationStatus): DeviceReservation {
     const reservation = this.requireReservation(reservationId);
 
     const from = reservation.status;
@@ -93,26 +87,21 @@ export class ReservationRegistry {
 
     return structuredClone(reservation);
   }
-  
-  refreshStatus(
-    reservationId: string,
-    now: Date,
-  ): DeviceReservation {
+
+  refreshStatus(reservationId: string, now: Date): DeviceReservation {
     const reservation = this.requireReservation(reservationId);
 
     const startsAt = new Date(reservation.startsAt);
     const expiresAt = new Date(reservation.expiresAt);
 
-    if (reservation.status === 'completed' ||
-        reservation.status === 'cancelled' ||
-        reservation.status === 'expired') {
+    if (reservation.status === 'completed' || reservation.status === 'cancelled' || reservation.status === 'expired') {
       return structuredClone(reservation);
     }
 
-    if(now >= expiresAt) {
+    if (now >= expiresAt) {
       return this.transitionStatus(reservationId, 'expired');
     }
-    
+
     if (reservation.status === 'scheduled' && now >= startsAt) {
       return this.transitionStatus(reservationId, 'active');
     }
@@ -121,10 +110,7 @@ export class ReservationRegistry {
       return this.transitionStatus(reservationId, 'expired');
     }
 
-    if (
-      reservation.status === 'scheduled' &&
-      now >= startsAt
-    ) {
+    if (reservation.status === 'scheduled' && now >= startsAt) {
       return this.transitionStatus(reservationId, 'active');
     }
 
@@ -135,10 +121,9 @@ export class ReservationRegistry {
     const reservation = this.reservations.get(reservationId);
 
     if (!reservation) {
-      throw new Error (`Unknown reservation: ${reservationId}`);
+      throw new Error(`Unknown reservation: ${reservationId}`);
     }
 
     return reservation;
   }
 }
-

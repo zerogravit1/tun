@@ -12,7 +12,7 @@
     "outDir": "dist",
     "rootDir": ".",
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": true
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"]
 }

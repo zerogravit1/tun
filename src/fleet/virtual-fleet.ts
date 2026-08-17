@@ -5,7 +5,7 @@ export const virtualFleet: Device[] = [
     id: 'virtual-tv-001',
     kind: 'set-top-box',
     platform: 'roku',
-    model:'tun-reference-low',
+    model: 'tun-reference-low',
     virtual: true,
     performanceClass: 'low',
     capabilities: {
@@ -15,20 +15,15 @@ export const virtualFleet: Device[] = [
       games: false,
       memoryMb: 1024,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-002',
     kind: 'set-top-box',
     platform: 'roku',
-    model:'tun-reference-mid',
+    model: 'tun-reference-mid',
     virtual: true,
     performanceClass: 'mid',
     capabilities: {
@@ -38,20 +33,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 1536,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-003',
     kind: 'set-top-box',
     platform: 'roku',
-    model:'tun-reference-high',
+    model: 'tun-reference-high',
     virtual: true,
     performanceClass: 'high',
     capabilities: {
@@ -61,20 +51,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 2048,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-004',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-low',
+    model: 'tun-reference-low',
     virtual: true,
     performanceClass: 'low',
     capabilities: {
@@ -84,20 +69,15 @@ export const virtualFleet: Device[] = [
       games: false,
       memoryMb: 1024,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-005',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-high',
+    model: 'tun-reference-high',
     virtual: true,
     performanceClass: 'high',
     capabilities: {
@@ -107,20 +87,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 2048,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-006',
     kind: 'tv',
     platform: 'webos',
-    model:'tun-reference-mid',
+    model: 'tun-reference-mid',
     virtual: true,
     performanceClass: 'mid',
     capabilities: {
@@ -130,20 +105,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 1536,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-007',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-low',
+    model: 'tun-reference-low',
     virtual: true,
     performanceClass: 'low',
     capabilities: {
@@ -153,20 +123,15 @@ export const virtualFleet: Device[] = [
       games: false,
       memoryMb: 1024,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-008',
     kind: 'tv',
     platform: 'webos',
-    model:'tun-reference-mid',
+    model: 'tun-reference-mid',
     virtual: true,
     performanceClass: 'mid',
     capabilities: {
@@ -176,20 +141,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 1536,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-009',
     kind: 'tv',
     platform: 'webos',
-    model:'tun-reference-high',
+    model: 'tun-reference-high',
     virtual: true,
     performanceClass: 'high',
     capabilities: {
@@ -199,20 +159,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 2048,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-010',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-low',
+    model: 'tun-reference-low',
     virtual: true,
     performanceClass: 'low',
     capabilities: {
@@ -222,20 +177,15 @@ export const virtualFleet: Device[] = [
       games: false,
       memoryMb: 1024,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-011',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-high',
+    model: 'tun-reference-high',
     virtual: true,
     performanceClass: 'high',
     capabilities: {
@@ -245,20 +195,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 2048,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-012',
     kind: 'tv',
     platform: 'webos',
-    model:'tun-reference-mid',
+    model: 'tun-reference-mid',
     virtual: true,
     performanceClass: 'mid',
     capabilities: {
@@ -268,20 +213,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 1536,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-013',
     kind: 'set-top-box',
     platform: 'roku',
-    model:'tun-reference-low',
+    model: 'tun-reference-low',
     virtual: true,
     performanceClass: 'low',
     capabilities: {
@@ -291,20 +231,15 @@ export const virtualFleet: Device[] = [
       games: false,
       memoryMb: 1024,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-014',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-mid',
+    model: 'tun-reference-mid',
     virtual: true,
     performanceClass: 'mid',
     capabilities: {
@@ -314,20 +249,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 1536,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-015',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-high',
+    model: 'tun-reference-high',
     virtual: true,
     performanceClass: 'high',
     capabilities: {
@@ -337,20 +267,15 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 2048,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
   {
     id: 'virtual-tv-016',
     kind: 'tv',
     platform: 'tizen',
-    model:'tun-reference-mid',
+    model: 'tun-reference-mid',
     virtual: true,
     performanceClass: 'mid',
     capabilities: {
@@ -360,13 +285,8 @@ export const virtualFleet: Device[] = [
       games: true,
       memoryMb: 1536,
     },
-    supportedOperations: [
-      'device/info',
-      'operations/list',
-      'health-check/get',
-      'applications/launch',
-    ],
+    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
     status: 'available',
-    consecutiveInfrastructureFailures: 0
+    consecutiveInfrastructureFailures: 0,
   },
 ];

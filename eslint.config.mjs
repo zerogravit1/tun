@@ -48,9 +48,9 @@ export default [
   {
     files: ['**/index.ts'],
     rules: {
-      'no-console': 'off'
-    }
+      'no-console': 'off',
+    },
   },
 
   eslintConfigPrettier,
-]
+];

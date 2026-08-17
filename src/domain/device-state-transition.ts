@@ -1,10 +1,6 @@
 import type { DeviceStatus } from './device.js';
 
-export type DeviceStateChangeSource =
-  | 'health-check'
-  | 'scheduler'
-  | 'system'
-  | 'operator';
+export type DeviceStateChangeSource = 'health-check' | 'scheduler' | 'system' | 'operator';
 
 export interface DeviceStateTransition {
   deviceId: string;
@@ -22,5 +18,5 @@ export const allowedTransitions: Record<DeviceStatus, DeviceStatus[]> = {
   unhealthy: ['available', 'offline', 'maintenance', 'quarantined'],
   offline: ['available', 'maintenance'],
   quarantined: ['maintenance'],
-  maintenance: ['available', 'unhealthy']
+  maintenance: ['available', 'unhealthy'],
 };
