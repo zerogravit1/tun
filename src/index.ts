@@ -7,5 +7,5 @@ for (const device of virtualFleet) {
   registry.upsert(device);
 }
 
-console.log('Tun virtual fleet');
+console.info('Tun virtual fleet');
 console.table(registry.list());
