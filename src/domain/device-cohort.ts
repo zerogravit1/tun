@@ -1,4 +1,4 @@
-import type { Codec, DeviceKind, HdrFormat, PerformanceClass, Resolution } from "./device.js";
+import type { Codec, DeviceKind, HdrFormat, PerformanceClass, Resolution } from './device.js';
 
 export interface DeviceCohort {
   id: string;

@@ -52,9 +52,7 @@ describe('DeviceRegistry', () => {
     registry.upsert(device());
     registry.reserve('tv-001', 'run-123');
 
-    expect(() => registry.release('tv-001', 'run-999')).toThrow(
-      'Reservation run-999 does not own device tv-001',
-    );
+    expect(() => registry.release('tv-001', 'run-999')).toThrow('Reservation run-999 does not own device tv-001');
 
     expect(registry.release('tv-001', 'run-123').status).toBe('available');
   });
@@ -70,19 +68,21 @@ describe('DeviceRegistry', () => {
   });
 
   it('finds a device from the virtual fleet', () => {
-    const registry = new DeviceRegistry()
+    const registry = new DeviceRegistry();
 
     for (const device of virtualFleet) {
       registry.upsert(device);
     }
 
     expect(registry.findAvailable({ codec: 'av1' }).length).toBeGreaterThan(0);
-    expect(registry.findAvailable({ hdr: 'dolby-vision'}).length).toBeGreaterThan(0);
-    expect(registry.findAvailable({
-      platform: 'roku',
-      hdr: 'dolby-vision',
-      codec: 'av1'
-    })).toHaveLength(1);
+    expect(registry.findAvailable({ hdr: 'dolby-vision' }).length).toBeGreaterThan(0);
+    expect(
+      registry.findAvailable({
+        platform: 'roku',
+        hdr: 'dolby-vision',
+        codec: 'av1',
+      }),
+    ).toHaveLength(1);
   });
 
   it('finds a device matching gaming requirementts', () => {
@@ -95,7 +95,7 @@ describe('DeviceRegistry', () => {
           hdrFormats: ['hdr10'],
           codecs: ['h264', 'av1'],
           games: true,
-          memoryMb: 1536
+          memoryMb: 1536,
         },
       }),
     );
@@ -110,27 +110,31 @@ describe('DeviceRegistry', () => {
   it('finds a device matching non-gaming requirements', () => {
     const registry = new DeviceRegistry();
 
-    registry.upsert(device({
-      id: 'non-gaming-tv',
-      capabilities: {
-        resolutions: ['1080p'],
-        hdrFormats: [],
-        codecs: ['h264'],
-        games: false,
-        memoryMb: 1024
-      }
-    }));
+    registry.upsert(
+      device({
+        id: 'non-gaming-tv',
+        capabilities: {
+          resolutions: ['1080p'],
+          hdrFormats: [],
+          codecs: ['h264'],
+          games: false,
+          memoryMb: 1024,
+        },
+      }),
+    );
 
-    registry.upsert(device({
-      id: 'gaming-tv',
-      capabilities: {
-        resolutions: ['1080p'],
-        hdrFormats: [],
-        codecs: ['h264'],
-        games: true,
-        memoryMb: 1024
-      }
-    }));
+    registry.upsert(
+      device({
+        id: 'gaming-tv',
+        capabilities: {
+          resolutions: ['1080p'],
+          hdrFormats: [],
+          codecs: ['h264'],
+          games: true,
+          memoryMb: 1024,
+        },
+      }),
+    );
 
     const results = registry.findAvailable({
       games: false,
@@ -143,16 +147,11 @@ describe('DeviceRegistry', () => {
   it('transitions an unhealthy device to maintenance', () => {
     const registry = new DeviceRegistry();
 
-    const testDevice = device({status: 'unhealthy'})
+    const testDevice = device({ status: 'unhealthy' });
 
     registry.upsert(testDevice);
 
-    const result = registry.transitionStatus(
-      testDevice.id,
-      'maintenance',
-      'test-pass',
-      'health-check'
-    );
+    const result = registry.transitionStatus(testDevice.id, 'maintenance', 'test-pass', 'health-check');
 
     expect(result.from).toBe('unhealthy');
     expect(result.to).toBe('maintenance');
@@ -164,19 +163,12 @@ describe('DeviceRegistry', () => {
 
   it('rejects an invalid quarantined to reserved transition', () => {
     const registry = new DeviceRegistry();
-    const testDevice = device({status: 'quarantined'})
+    const testDevice = device({ status: 'quarantined' });
 
     registry.upsert(testDevice);
 
-    expect(() =>
-      registry.transitionStatus(
-        testDevice.id,
-        'reserved',
-        'test-fail',
-        'health-check',
-      ),
-    ).toThrow(
-      `Cannot transition device ${testDevice.id} from quarantined to reserved`
+    expect(() => registry.transitionStatus(testDevice.id, 'reserved', 'test-fail', 'health-check')).toThrow(
+      `Cannot transition device ${testDevice.id} from quarantined to reserved`,
     );
     expect(registry.get(testDevice.id)?.status).toBe('quarantined');
   });
@@ -184,25 +176,18 @@ describe('DeviceRegistry', () => {
   it('requires reserve() to be used when reserving a device', () => {
     const registry = new DeviceRegistry();
 
-    const testDevice = device({status: 'available'});
+    const testDevice = device({ status: 'available' });
 
     registry.upsert(testDevice);
 
-    expect(() =>
-      registry.transitionStatus(
-        testDevice.id,
-        'reserved',
-        'test',
-        'scheduler',
-      ),
-    ).toThrow();
+    expect(() => registry.transitionStatus(testDevice.id, 'reserved', 'test', 'scheduler')).toThrow();
 
     expect(registry.get(testDevice.id)?.status).toBe('available');
     expect(registry.get(testDevice.id)?.reservedBy).toBeUndefined();
   });
 
   it('finds devices matching cohort criteria', () => {
-    const registry = new DeviceRegistry()
+    const registry = new DeviceRegistry();
 
     const testDevice1 = device({ id: 'tv-001', platform: 'roku' });
     const testDevice2 = device({ id: 'tv-002', platform: 'roku' });
@@ -218,7 +203,7 @@ describe('DeviceRegistry', () => {
   });
 
   it('returns only available devices matching cohort criteria', () => {
-    const registry = new DeviceRegistry()
+    const registry = new DeviceRegistry();
 
     const testDevice1 = device({ id: 'tv-001', platform: 'roku', status: 'available' });
     const testDevice2 = device({ id: 'tv-002', platform: 'roku', status: 'available' });
@@ -237,33 +222,37 @@ describe('DeviceRegistry', () => {
   it('finds devices matching multiple cohort criteria', () => {
     const registry = new DeviceRegistry();
 
-    registry.upsert(device({
-      id: 'roku-low',
-      kind: 'set-top-box',
-      platform: 'roku',
-      performanceClass: 'low',
-      capabilities: {
-        resolutions: ['1080p'],
-        hdrFormats: [],
-        codecs: ['h264'],
-        games: false,
-        memoryMb: 1024,
-      },
-    }));
+    registry.upsert(
+      device({
+        id: 'roku-low',
+        kind: 'set-top-box',
+        platform: 'roku',
+        performanceClass: 'low',
+        capabilities: {
+          resolutions: ['1080p'],
+          hdrFormats: [],
+          codecs: ['h264'],
+          games: false,
+          memoryMb: 1024,
+        },
+      }),
+    );
 
-    registry.upsert(device({
-      id: 'roku-high',
-      kind: 'set-top-box',
-      platform: 'roku',
-      performanceClass: 'high',
-      capabilities: {
-        resolutions: ['1080p', '2160p'],
-        hdrFormats: ['hdr10'],
-        codecs: ['h264', 'av1'],
-        games: true,
-        memoryMb: 2048,
-      },
-    }));
+    registry.upsert(
+      device({
+        id: 'roku-high',
+        kind: 'set-top-box',
+        platform: 'roku',
+        performanceClass: 'high',
+        capabilities: {
+          resolutions: ['1080p', '2160p'],
+          hdrFormats: ['hdr10'],
+          codecs: ['h264', 'av1'],
+          games: true,
+          memoryMb: 2048,
+        },
+      }),
+    );
 
     const result = registry.find({
       platform: 'roku',

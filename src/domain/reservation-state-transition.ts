@@ -1,4 +1,4 @@
-import { ReservationStatus } from "./device-reservation.js";
+import { ReservationStatus } from './device-reservation.js';
 
 export const allowedReservationTransition: Record<ReservationStatus, ReservationStatus[]> = {
   scheduled: ['active', 'cancelled', 'expired'],

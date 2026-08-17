@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest';
 import { ReservationRegistry } from '../src/registry/reservation-registry.js';
 
 describe('DeviceReservation', () => {
@@ -20,7 +20,7 @@ describe('DeviceReservation', () => {
     expect(reservation.status).toBe('scheduled');
     expect(reservation.id).toBeDefined();
 
-    expect(registry.get(reservation.id)).toEqual(reservation)
+    expect(registry.get(reservation.id)).toEqual(reservation);
   });
 
   it('rejects a reservation quantity of zero', () => {
@@ -37,7 +37,7 @@ describe('DeviceReservation', () => {
         startsAt: '2026-08-17T18:00:00Z',
         expiresAt: '2026-08-17T20:00:00Z',
         priority: 'normal',
-      })
+      }),
     ).toThrow('requested device quantity must be at least 1');
   });
 
@@ -55,7 +55,7 @@ describe('DeviceReservation', () => {
         startsAt: '2026-08-17T18:00:00Z',
         expiresAt: '2026-08-17T20:00:00Z',
         priority: 'normal',
-      })
+      }),
     ).toThrow('requested minimum device quantity must be at least 1');
   });
 
@@ -73,7 +73,7 @@ describe('DeviceReservation', () => {
         startsAt: '2026-08-17T18:00:00Z',
         expiresAt: '2026-08-17T20:00:00Z',
         priority: 'normal',
-      })
+      }),
     ).toThrow('request minimum quantity cannot be greater than request quantity');
   });
 
@@ -94,12 +94,12 @@ describe('DeviceReservation', () => {
         startsAt,
         expiresAt,
         priority: 'normal',
-      })
+      }),
     ).toThrow(`reservation expiresAt: ${expiresAt} cannot be before startsAt: ${startsAt}`);
   });
 
   it('transitions a scheduled reservation to active', () => {
-    const registry = new ReservationRegistry()
+    const registry = new ReservationRegistry();
 
     const testReservation = registry.create({
       requestedBy: 'developer-a',
@@ -113,10 +113,7 @@ describe('DeviceReservation', () => {
       priority: 'normal',
     });
 
-    const result = registry.transitionStatus(
-      testReservation.id,
-      'active'
-    )
+    const result = registry.transitionStatus(testReservation.id, 'active');
 
     expect(result.status).toBe('active');
     expect(registry.get(testReservation.id)?.status).toBe('active');
@@ -137,12 +134,9 @@ describe('DeviceReservation', () => {
       priority: 'normal',
     });
 
-    expect(() =>
-      registry.transitionStatus(
-        testReservation.id,
-        'completed'
-      )
-    ).toThrow(`Cannot transition reservation ${testReservation.id} from: scheduled to: completed`);
+    expect(() => registry.transitionStatus(testReservation.id, 'completed')).toThrow(
+      `Cannot transition reservation ${testReservation.id} from: scheduled to: completed`,
+    );
     expect(registry.get(testReservation.id)?.status).toBe('scheduled');
   });
 
@@ -158,13 +152,10 @@ describe('DeviceReservation', () => {
       minimumQuantity: 3,
       startsAt: '2026-08-17T18:00:00Z',
       expiresAt: '2026-08-17T20:00:00Z',
-      priority: 'normal'
+      priority: 'normal',
     });
 
-    const result = registry.refreshStatus(
-      reservation.id,
-      new Date('2026-08-17T19:00:00Z')
-    );
+    const result = registry.refreshStatus(reservation.id, new Date('2026-08-17T19:00:00Z'));
 
     expect(result.status).toBe('active');
   });
@@ -181,13 +172,10 @@ describe('DeviceReservation', () => {
       minimumQuantity: 3,
       startsAt: '2026-08-17T18:00:00Z',
       expiresAt: '2026-08-17T20:00:00Z',
-      priority: 'normal'
+      priority: 'normal',
     });
 
-    const result = registry.refreshStatus(
-      reservation.id,
-      new Date('2026-08-17T21:00:00Z')
-    );
+    const result = registry.refreshStatus(reservation.id, new Date('2026-08-17T21:00:00Z'));
 
     expect(result.status).toBe('expired');
   });
@@ -204,13 +192,10 @@ describe('DeviceReservation', () => {
       minimumQuantity: 3,
       startsAt: '2026-08-17T18:00:00Z',
       expiresAt: '2026-08-17T20:00:00Z',
-      priority: 'normal'
+      priority: 'normal',
     });
 
-    const result = registry.refreshStatus(
-      reservation.id,
-      new Date('2026-08-17T17:00:00Z')
-    );
+    const result = registry.refreshStatus(reservation.id, new Date('2026-08-17T17:00:00Z'));
 
     expect(result.status).toBe('scheduled');
   });
@@ -230,16 +215,10 @@ describe('DeviceReservation', () => {
       priority: 'normal',
     });
 
-    registry.transitionStatus(
-      reservation.id,
-      'active'
-    );
+    registry.transitionStatus(reservation.id, 'active');
 
-    const result = registry.refreshStatus(
-      reservation.id,
-      new Date('2026-08-17T19:30:00Z')
-    );
+    const result = registry.refreshStatus(reservation.id, new Date('2026-08-17T19:30:00Z'));
 
     expect(result.status).toBe('active');
-  })
+  });
 });
