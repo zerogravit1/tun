@@ -111,7 +111,9 @@ export class ReservationRegistry {
 
     if(now >= expiresAt) {
       return this.transitionStatus(reservationId, 'expired');
-    } else if (now >= startsAt) {
+    }
+    
+    if (reservation.status === 'scheduled' && now >= startsAt) {
       return this.transitionStatus(reservationId, 'active');
     }
 
