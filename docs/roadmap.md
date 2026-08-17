@@ -49,7 +49,7 @@ Success condition:
 
 > Tun can differentiate workload failure from unusable-device failure and keep bad devices out of the scheduling pool.
 
-## Phase 4 — Telemetry
+## Phase 4 — Telemetry and reporting
 
 - CPU and memory telemetry
 - workload timing
@@ -59,10 +59,14 @@ Success condition:
 - recovery frequency
 - failure classification
 - basic alerts or thresholds
+- expose operational and evaluation metrics to Grafana
+- use Grafana dashboards for fleet health, utilization, queue behavior, reservation activity, failures, and performance trends
+
+Grafana is the planned reporting and observability surface for Tun. Tun should own the domain data and metrics; Grafana should visualize and alert on them rather than duplicating scheduling or reservation business logic.
 
 Success condition:
 
-> A run produces operational evidence, not just pass/fail.
+> A run produces operational evidence, not just pass/fail, and Tun metrics can be explored through Grafana.
 
 ## Phase 5 — Comparative evaluation
 
@@ -78,7 +82,7 @@ Success condition:
 
 ## Phase 6 — Developer interface
 
-Start with an API/CLI before building a web UI.
+Start with an API/CLI so reservation, scheduling, and evaluation behavior is available to automation before building a web UI.
 
 Potential request:
 
@@ -92,6 +96,35 @@ tun evaluate \
 ```
 
 The output should emphasize decisions and deltas rather than raw test counts.
+
+A developer-facing Tun web interface is a planned product surface for managing intent and inventory interaction. It should eventually support:
+
+- fleet and device health visibility
+- cohort and reusable device-selection profiles
+- reservation creation, cancellation, priority, quantity, and time windows
+- active leases and queue visibility
+- reservation conflicts, partial fulfillment, and future substitution decisions
+- links or embedded navigation to Grafana reporting where appropriate
+
+CI should consume Tun through the same API rather than duplicating reservation or scheduling logic. A pipeline may reference a reusable reservation/profile or create an ad hoc reservation for a specific run.
+
+Conceptually:
+
+```text
+Developer / Tun Web UI
+        ↓
+Tun API
+        ↓
+reservation / scheduling / lease logic
+        ↓
+CI workload execution
+        ↓
+metrics and evaluation results
+        ↓
+Grafana reporting
+```
+
+The web UI should express developer intent; authorization, quota, priority, reservation, scheduling, and lease rules should remain backend/domain responsibilities.
 
 ## Phase 7 — Real device adapter
 
@@ -170,7 +203,7 @@ These directions are expected to become more concrete during the telemetry and c
 
 Do not build these until the earlier phases justify them:
 
-- complex web dashboard
+- complex custom analytics dashboard beyond the planned Tun management UI and Grafana reporting
 - persistent database
 - distributed scheduler
 - Kubernetes
