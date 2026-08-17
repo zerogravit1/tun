@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { ReservationRegistry } from '../src/registry/reservation-registry.js';
 
 describe('DeviceReservation', () => {
@@ -169,7 +169,7 @@ describe('DeviceReservation', () => {
     expect(result.status).toBe('active');
   });
 
-  it('expires a scheduled reservation after its expires time', () => {
+  it('expires a scheduled reservation after its expiration time', () => {
     const registry = new ReservationRegistry();
 
     const reservation = registry.create({
@@ -192,7 +192,7 @@ describe('DeviceReservation', () => {
     expect(result.status).toBe('expired');
   });
 
-  it('reservation remains scheduled', () => {
+  it('keeps a reservation scheduled before start time', () => {
     const registry = new ReservationRegistry();
 
     const reservation = registry.create({
