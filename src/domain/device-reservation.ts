@@ -15,6 +15,7 @@ export type ReservationPriority =
 
 export interface DeviceReservation {
   id: string;
+  createdAt: string,
   requestedBy: string;
 
   criteria: DeviceCriteria;
@@ -51,7 +52,7 @@ export interface CreateReservationRequest {
   minimumQuantity: number;
 
   startsAt: string;
-  expireAt: string;
+  expiresAt: string;
 
   priority: ReservationPriority;
   reason?: string;
