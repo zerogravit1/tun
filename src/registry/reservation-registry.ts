@@ -1,5 +1,4 @@
-import { CreateReservationRequest, DeviceReservation } from '../domain/device-reservation.js';
-import { DeviceRegistry } from './device-registry.js';
+import type { CreateReservationRequest, DeviceReservation } from '../domain/device-reservation.js';
 
 export class ReservationRegistry {
   private readonly reservations = new Map<string, DeviceReservation>()
@@ -29,7 +28,7 @@ export class ReservationRegistry {
     const expiresAt = new Date(request.expiresAt);
 
     if (expiresAt <= startsAt) {
-      throw new Error(`reservation expiresAt: ${expiresAt} cannot be before startsAt: ${startsAt}`);
+      throw new Error(`reservation expiresAt: ${request.expiresAt} cannot be before startsAt: ${request.startsAt}`);
     }
 
     if (request.priority === undefined) {
@@ -42,11 +41,13 @@ export class ReservationRegistry {
       requestedBy: request.requestedBy,
       criteria: request.criteria,
       quantity: request.quantity,
-      minimumQuantity: request.quantity,
+      minimumQuantity: request.minimumQuantity,
       startsAt: request.startsAt,
       expiresAt: request.expiresAt,
       priority: request.priority,
-      reason: request.reason,
+      ...(request.reason !== undefined && {
+        reason: request.reason
+      }),
       status: 'scheduled'
     }
 
