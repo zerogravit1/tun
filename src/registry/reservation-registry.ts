@@ -1,4 +1,5 @@
-import type { CreateReservationRequest, DeviceReservation } from '../domain/device-reservation.js';
+import type { CreateReservationRequest, DeviceReservation, ReservationStatus } from '../domain/device-reservation.js';
+import { allowedReservationTransition } from '../domain/reservation-state-transition.js';
 
 export class ReservationRegistry {
   private readonly reservations = new Map<string, DeviceReservation>()
@@ -75,4 +76,67 @@ export class ReservationRegistry {
   list(): DeviceReservation[] {
     return [...this.reservations.values()].map((reservation) => structuredClone(reservation));
   }
+
+  transitionStatus(
+    reservationId: string,
+    to: ReservationStatus
+  ): DeviceReservation {
+    const reservation = this.requireReservation(reservationId);
+
+    const from = reservation.status;
+
+    if (!allowedReservationTransition[from].includes(to)) {
+      throw new Error(`Cannot transition reservation ${reservationId} from: ${from} to: ${to}`);
+    }
+
+    reservation.status = to;
+
+    return structuredClone(reservation);
+  }
+  
+  refreshStatus(
+    reservationId: string,
+    now: Date,
+  ): DeviceReservation {
+    const reservation = this.requireReservation(reservationId);
+
+    const startsAt = new Date(reservation.startsAt);
+    const expiresAt = new Date(reservation.expiresAt);
+
+    if (reservation.status === 'completed' ||
+        reservation.status === 'cancelled' ||
+        reservation.status === 'expired') {
+      return structuredClone(reservation);
+    }
+
+    if(now >= expiresAt) {
+      return this.transitionStatus(reservationId, 'expired');
+    } else if (now >= startsAt) {
+      return this.transitionStatus(reservationId, 'active');
+    }
+
+    if (now >= expiresAt) {
+      return this.transitionStatus(reservationId, 'expired');
+    }
+
+    if (
+      reservation.status === 'scheduled' &&
+      now >= startsAt
+    ) {
+      return this.transitionStatus(reservationId, 'active');
+    }
+
+    return structuredClone(reservation);
+  }
+
+  private requireReservation(reservationId: string): DeviceReservation {
+    const reservation = this.reservations.get(reservationId);
+
+    if (!reservation) {
+      throw new Error (`Unknown reservation: ${reservationId}`);
+    }
+
+    return reservation;
+  }
 }
+

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, test } from 'vitest'
 import { ReservationRegistry } from '../src/registry/reservation-registry.js';
 
 describe('DeviceReservation', () => {
@@ -96,5 +96,122 @@ describe('DeviceReservation', () => {
         priority: 'normal',
       })
     ).toThrow(`reservation expiresAt: ${expiresAt} cannot be before startsAt: ${startsAt}`);
+  });
+
+  it('transitions a scheduled reservation to active', () => {
+    const registry = new ReservationRegistry()
+
+    const testReservation = registry.create({
+      requestedBy: 'developer-a',
+      criteria: {
+        platform: 'roku',
+      },
+      quantity: 4,
+      minimumQuantity: 3,
+      startsAt: '2026-08-17T18:00:00Z',
+      expiresAt: '2026-08-17T20:00:00Z',
+      priority: 'normal',
+    });
+
+    const result = registry.transitionStatus(
+      testReservation.id,
+      'active'
+    )
+
+    expect(result.status).toBe('active');
+    expect(registry.get(testReservation.id)?.status).toBe('active');
+  });
+
+  it('rejects a transition from scheduled to completed', () => {
+    const registry = new ReservationRegistry();
+
+    const testReservation = registry.create({
+      requestedBy: 'developer-a',
+      criteria: {
+        platform: 'roku',
+      },
+      quantity: 4,
+      minimumQuantity: 3,
+      startsAt: '2026-08-17T18:00:00Z',
+      expiresAt: '2026-08-17T20:00:00Z',
+      priority: 'normal',
+    });
+
+    expect(() =>
+      registry.transitionStatus(
+        testReservation.id,
+        'completed'
+      )
+    ).toThrow(`Cannot transition reservation ${testReservation.id} from: scheduled to: completed`);
+    expect(registry.get(testReservation.id)?.status).toBe('scheduled');
+  });
+
+  it('activates a scheduled reservation after its start time', () => {
+    const registry = new ReservationRegistry();
+
+    const reservation = registry.create({
+      requestedBy: 'developer-a',
+      criteria: {
+        platform: 'roku',
+      },
+      quantity: 4,
+      minimumQuantity: 3,
+      startsAt: '2026-08-17T18:00:00Z',
+      expiresAt: '2026-08-17T20:00:00Z',
+      priority: 'normal'
+    });
+
+    const result = registry.refreshStatus(
+      reservation.id,
+      new Date('2026-08-17T19:00:00Z')
+    );
+
+    expect(result.status).toBe('active');
+  });
+
+  it('expires a scheduled reservation after its expires time', () => {
+    const registry = new ReservationRegistry();
+
+    const reservation = registry.create({
+      requestedBy: 'developer-a',
+      criteria: {
+        platform: 'roku',
+      },
+      quantity: 4,
+      minimumQuantity: 3,
+      startsAt: '2026-08-17T18:00:00Z',
+      expiresAt: '2026-08-17T20:00:00Z',
+      priority: 'normal'
+    });
+
+    const result = registry.refreshStatus(
+      reservation.id,
+      new Date('2026-08-17T21:00:00Z')
+    );
+
+    expect(result.status).toBe('expired');
+  });
+
+  it('reservation remains scheduled', () => {
+    const registry = new ReservationRegistry();
+
+    const reservation = registry.create({
+      requestedBy: 'developer-a',
+      criteria: {
+        platform: 'roku',
+      },
+      quantity: 4,
+      minimumQuantity: 3,
+      startsAt: '2026-08-17T18:00:00Z',
+      expiresAt: '2026-08-17T20:00:00Z',
+      priority: 'normal'
+    });
+
+    const result = registry.refreshStatus(
+      reservation.id,
+      new Date('2026-08-17T17:00:00Z')
+    );
+
+    expect(result.status).toBe('scheduled');
   });
 });
