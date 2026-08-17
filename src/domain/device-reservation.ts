@@ -1,4 +1,4 @@
-import { DeviceCriteria } from "./device-cohort.js";
+import type { DeviceCriteria } from './device-cohort.js';
 
 export type ReservationStatus =
   | 'scheduled'
@@ -26,7 +26,7 @@ export interface DeviceReservation {
   expiresAt: string;
   
   priority: ReservationPriority;
-  reasom?: string;
+  reason?: string;
 
   status: ReservationStatus;
 }
@@ -41,4 +41,18 @@ export interface DeviceLease {
   acquiredAt: string;
 
   releasedAt?: string;
+}
+
+export interface CreateReservationRequest {
+  requestedBy: string;
+  criteria: DeviceCriteria;
+
+  quantity: number;
+  minimumQuantity: number;
+
+  startsAt: string;
+  expireAt: string;
+
+  priority: ReservationPriority;
+  reason?: string;
 }
