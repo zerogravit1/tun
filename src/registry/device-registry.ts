@@ -72,7 +72,7 @@ export class DeviceRegistry {
     const device = this.requireDevice(deviceId);
 
     if (device.status !== 'reserved' || device.reservedBy !== leaseId) {
-      throw new Error(`Reservation ${leaseId} does not own device ${deviceId}`);
+      throw new Error(`Lease ${leaseId} does not own device ${deviceId}`);
     }
 
     device.status = 'available';

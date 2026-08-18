@@ -38,7 +38,7 @@ function addRokuDevice(deviceRegistry: DeviceRegistry, id = 'device-001') {
 
 function createReservation(reservationRegistry: ReservationRegistry, quantity = 3) {
   return reservationRegistry.create({
-    requestedBy: 'develop-a',
+    requestedBy: 'developer-a',
     criteria: {
       platform: 'roku',
     },
@@ -74,58 +74,31 @@ describe('DeviceLease', () => {
   });
 
   it('rejects lease acquisition for an inactive reservation', () => {
-    const {
-      deviceRegistry,
-      reservationRegistry,
-      leaseRegistry,
-    } = createLeaseTestContext();
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
 
     addRokuDevice(deviceRegistry);
 
     const reservation = createReservation(reservationRegistry);
 
-    expect(() =>
-      leaseRegistry.acquire(
-        reservation.id,
-        'device-001',
-        'developer-a',
-      ),
-    ).toThrow(
-      `Reservation ${reservation.id} must be active to acquire a lease`
+    expect(() => leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a')).toThrow(
+      `Reservation ${reservation.id} must be active to acquire a lease`,
     );
   });
 
   it('rejects a lease when reservation quantity is reached', () => {
-    const {
-      deviceRegistry,
-      reservationRegistry,
-      leaseRegistry,
-    } = createLeaseTestContext();
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
 
     addRokuDevice(deviceRegistry, 'device-001');
     addRokuDevice(deviceRegistry, 'device-002');
 
     const reservation = createReservation(reservationRegistry, 1);
 
-    reservationRegistry.transitionStatus(
-      reservation.id,
-      'active',
-    );
+    reservationRegistry.transitionStatus(reservation.id, 'active');
 
-    leaseRegistry.acquire(
-      reservation.id,
-      'device-001',
-      'developer-a',
-    );
+    leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a');
 
-    expect(() =>
-      leaseRegistry.acquire(
-        reservation.id,
-        'device-002',
-        'developer-a'
-      )
-    ).toThrow(
-      `Reservation ${reservation.id} has reached its device quantity of 1`
+    expect(() => leaseRegistry.acquire(reservation.id, 'device-002', 'developer-a')).toThrow(
+      `Reservation ${reservation.id} has reached its device quantity of 1`,
     );
   });
 });
