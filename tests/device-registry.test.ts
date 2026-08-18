@@ -47,12 +47,12 @@ describe('DeviceRegistry', () => {
     expect(registry.findAvailable({ codec: 'av1' })).toHaveLength(0);
   });
 
-  it('requires the reservation owner to release the device', () => {
+  it('requires the lease owner to release the device', () => {
     const registry = new DeviceRegistry();
     registry.upsert(device());
     registry.reserve('tv-001', 'run-123');
 
-    expect(() => registry.release('tv-001', 'run-999')).toThrow('Reservation run-999 does not own device tv-001');
+    expect(() => registry.release('tv-001', 'run-999')).toThrow('Lease run-999 does not own device tv-001');
 
     expect(registry.release('tv-001', 'run-123').status).toBe('available');
   });
