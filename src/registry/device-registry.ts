@@ -55,7 +55,7 @@ export class DeviceRegistry {
     });
   }
 
-  reserve(deviceId: string, reservationId: string): Device {
+  reserve(deviceId: string, leaseId: string): Device {
     const device = this.requireDevice(deviceId);
 
     if (device.status !== 'available') {
@@ -63,16 +63,16 @@ export class DeviceRegistry {
     }
 
     device.status = 'reserved';
-    device.reservedBy = reservationId;
+    device.reservedBy = leaseId;
 
     return structuredClone(device);
   }
 
-  release(deviceId: string, reservationId: string): Device {
+  release(deviceId: string, leaseId: string): Device {
     const device = this.requireDevice(deviceId);
 
-    if (device.status !== 'reserved' || device.reservedBy !== reservationId) {
-      throw new Error(`Reservation ${reservationId} does not own device ${deviceId}`);
+    if (device.status !== 'reserved' || device.reservedBy !== leaseId) {
+      throw new Error(`Reservation ${leaseId} does not own device ${deviceId}`);
     }
 
     device.status = 'available';

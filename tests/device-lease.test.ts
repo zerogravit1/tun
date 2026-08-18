@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { ReservationRegistry } from '../src/registry/reservation-registry.js';
-import { LeaseRegistry } from '../src/registry/lease=registry.js';
+import { LeaseRegistry } from '../src/registry/lease-registry.js';
 import { DeviceRegistry } from '../src/registry/device-registry.js';
 
 describe('DeviceLease', () => {
   it('creates a device lease', () => {
-    const deviceRegistry = new DeviceRegistry()
+    const deviceRegistry = new DeviceRegistry();
     const reservationRegistry = new ReservationRegistry();
     const leaseRegistry = new LeaseRegistry(reservationRegistry, deviceRegistry);
 
@@ -33,29 +33,27 @@ describe('DeviceLease', () => {
         hdrFormats: [],
         codecs: ['h264'],
         games: false,
-        memoryMb: 2048
+        memoryMb: 2048,
       },
       supportedOperations: [],
       status: 'available',
       consecutiveInfrastructureFailures: 0,
-    })
+    });
 
-    reservationRegistry.transitionStatus(
-      reservation.id,
-      'active',
-    );
+    reservationRegistry.transitionStatus(reservation.id, 'active');
 
-    const lease = leaseRegistry.acquire(
-      reservation.id,
-      'device-001',
-      'developer-a',
-    );
+    const lease = leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a');
 
     expect(lease.id).toBeDefined();
     expect(lease.reservationId).toBe(reservation.id);
     expect(lease.deviceId).toBe('device-001');
     expect(lease.acquiredBy).toBe('developer-a');
-    expect(lease.acquiredAt).toBeDefined()
+    expect(lease.acquiredAt).toBeDefined();
     expect(lease.releasedAt).toBeUndefined();
+
+    const leasedDevice = deviceRegistry.get('device-001');
+
+    expect(leasedDevice?.status).toBe('reserved');
+    expect(leasedDevice?.reservedBy).toBe(lease.id);
   });
 });
