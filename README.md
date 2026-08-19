@@ -87,7 +87,7 @@ npm run dev
 
 ## Example
 
-This shows a list of devices, then a reservation is made and the updated table.
+This loads the virtual fleet, creates a reservation, and shows the scheduler selecting and leasing a matching device.
 
 ```bash
 npm run example

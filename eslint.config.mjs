@@ -46,7 +46,7 @@ export default [
   },
 
   {
-    files: ['**/index.ts'],
+    files: ['**/index.ts', 'examples/basic-scheduling.ts'],
     rules: {
       'no-console': 'off',
     },

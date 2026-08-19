@@ -8,16 +8,9 @@ import { virtualFleet } from '../src/fleet/virtual-fleet.js';
 const deviceRegistry = new DeviceRegistry();
 const reservationRegistry = new ReservationRegistry();
 
-const leaseRegistry = new LeaseRegistry(
-  reservationRegistry,
-  deviceRegistry,
-);
+const leaseRegistry = new LeaseRegistry(reservationRegistry, deviceRegistry);
 
-const scheduler = new DeviceScheduler(
-  reservationRegistry,
-  deviceRegistry,
-  leaseRegistry,
-);
+const scheduler = new DeviceScheduler(reservationRegistry, deviceRegistry, leaseRegistry);
 
 for (const device of virtualFleet) {
   deviceRegistry.upsert(device);
@@ -26,49 +19,9 @@ for (const device of virtualFleet) {
 console.log('before reservation');
 console.table(deviceRegistry.list());
 
-// deviceRegistry.upsert({
-//   id: 'device-001',
-//   kind: 'set-top-box',
-//   platform: 'roku',
-//   model: 'test-roku',
-//   virtual: true,
-//   performanceClass: 'mid',
-//   capabilities: {
-//     resolutions: ['1080p'],
-//     hdrFormats: [],
-//     codecs: ['h264'],
-//     games: false,
-//     memoryMb: 2048,
-//   },
-//   supportedOperations: [],
-//   status: 'available',
-//   consecutiveInfrastructureFailures: 0,
-// });
+const now = new Date().toISOString();
 
-// deviceRegistry.upsert({
-//   id: 'device-002',
-//   kind: 'tv',
-//   platform: 'webos',
-//   model: 'test-webos',
-//   virtual: true,
-//   performanceClass: 'high',
-//   capabilities: {
-//     resolutions: ['2160p'],
-//     hdrFormats: ['hdr10+'],
-//     codecs: ['h264'],
-//     games: false,
-//     memoryMb: 2048,
-//   },
-//   supportedOperations: [],
-//   status: 'available',
-//   consecutiveInfrastructureFailures: 0,
-// });
-
-const now = new Date(Date.now()).toISOString()
-
-const twoHoursFromNow = new Date(
-  Date.now() + 2 * 60 * 60 * 1000,
-).toISOString();
+const twoHoursFromNow = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
 
 const reservation = reservationRegistry.create({
   requestedBy: 'developer-a',
@@ -82,15 +35,9 @@ const reservation = reservationRegistry.create({
   priority: 'normal',
 });
 
-reservationRegistry.transitionStatus(
-  reservation.id,
-  'active',
-);
+reservationRegistry.transitionStatus(reservation.id, 'active');
 
-const lease = scheduler.schedule(
-  reservation.id,
-  'developer-a',
-);
+const lease = scheduler.schedule(reservation.id, 'developer-a');
 
 console.log(lease);
 console.log('after reservation');
