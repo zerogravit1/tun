@@ -85,6 +85,14 @@ npm test
 npm run dev
 ```
 
+## Example
+
+This shows a list of devices, then a reservation is made and the updated table.
+
+```bash
+npm run example
+```
+
 See:
 
 - [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md)
