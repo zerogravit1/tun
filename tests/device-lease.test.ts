@@ -101,4 +101,63 @@ describe('DeviceLease', () => {
       `Reservation ${reservation.id} has reached its device quantity of 1`,
     );
   });
+
+  it('release a device lease', () => {
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
+
+    addRokuDevice(deviceRegistry);
+
+    const reservation = createReservation(reservationRegistry);
+
+    reservationRegistry.transitionStatus(reservation.id, 'active');
+
+    const lease = leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a');
+
+    const releasedLease = leaseRegistry.release(lease.id);
+
+    expect(releasedLease.releasedAt).toBeDefined();
+    expect(leaseRegistry.get(lease.id)).toEqual(releasedLease);
+
+    const device = deviceRegistry.get('device-001');
+    expect(device?.status).toBe('available');
+    expect(device?.reservedBy).toBeUndefined();
+  });
+
+  it('rejects a lease ID already released', () => {
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
+
+    addRokuDevice(deviceRegistry);
+
+    const reservation = createReservation(reservationRegistry);
+
+    reservationRegistry.transitionStatus(reservation.id, 'active');
+
+    const lease = leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a');
+
+    leaseRegistry.release(lease.id);
+
+    expect(() => leaseRegistry.release(lease.id)).toThrow(`Lease ${lease.id} has already been released`);
+
+    const device = deviceRegistry.get('device-001');
+    expect(device?.status).toBe('available');
+    expect(device?.reservedBy).toBeUndefined();
+  });
+
+  it('rejects an unknown lease ID', () => {
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
+
+    addRokuDevice(deviceRegistry);
+
+    const reservation = createReservation(reservationRegistry);
+
+    reservationRegistry.transitionStatus(reservation.id, 'active');
+
+    const lease = leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a');
+
+    expect(() => leaseRegistry.release('test-lease-id')).toThrow(`Unknown lease: test-lease-id`);
+
+    const device = deviceRegistry.get('device-001');
+    expect(device?.status).toBe('reserved');
+    expect(device?.reservedBy).toBe(lease.id);
+  });
 });

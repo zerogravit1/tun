@@ -62,4 +62,24 @@ export class LeaseRegistry {
 
     return structuredClone(lease);
   }
+
+  release(leaseId: string): DeviceLease {
+    const lease = this.leases.get(leaseId);
+
+    if (!lease) {
+      throw new Error(`Unknown lease: ${leaseId}`);
+    }
+
+    if (lease.releasedAt !== undefined) {
+      throw new Error(`Lease ${leaseId} has already been released`);
+    }
+
+    this.deviceRegistry.release(lease.deviceId, lease.id);
+
+    lease.releasedAt = new Date().toISOString();
+
+    this.leases.set(lease.id, structuredClone(lease));
+
+    return structuredClone(lease);
+  }
 }
