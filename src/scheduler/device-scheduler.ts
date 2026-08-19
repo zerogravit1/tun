@@ -10,10 +10,7 @@ export class DeviceScheduler {
     private readonly leaseRegistry: LeaseRegistry,
   ) {}
 
-  schedule(
-    reservationId: string,
-    acquiredBy: string,
-  ): DeviceLease {
+  schedule(reservationId: string, acquiredBy: string): DeviceLease {
     const reservation = this.reservationRegistry.get(reservationId);
 
     if (!reservation) {
@@ -28,10 +25,6 @@ export class DeviceScheduler {
       throw new Error(`No devices available for reservation ${reservationId}`);
     }
 
-    return this.leaseRegistry.acquire(
-      reservation.id,
-      device.id,
-      acquiredBy,
-    );
+    return this.leaseRegistry.acquire(reservation.id, device.id, acquiredBy);
   }
 }
