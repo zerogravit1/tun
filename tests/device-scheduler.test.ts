@@ -122,4 +122,24 @@ describe('DeviceScheduler', () => {
     expect(rokuDevice?.status).toBe('reserved');
     expect(rokuDevice?.reservedBy).toBe(lease.id);
   });
+
+  it('rejects a schedule request with no devices available', () => {
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
+
+    addWebosDevice(deviceRegistry, 'device-001');
+
+    const reservation = createReservation(reservationRegistry);
+
+    reservationRegistry.transitionStatus(reservation.id, 'active');
+
+    const scheduler = new DeviceScheduler(reservationRegistry, deviceRegistry, leaseRegistry);
+
+    expect(() => scheduler.schedule(reservation.id, 'developer-a')).toThrow(
+      `No devices available for reservation ${reservation.id}`,
+    );
+
+    const webosDevice = deviceRegistry.get('device-001');
+
+    expect(webosDevice?.status).toBe('available');
+  });
 });
