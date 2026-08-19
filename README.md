@@ -85,6 +85,14 @@ npm test
 npm run dev
 ```
 
+## Example
+
+This loads the virtual fleet, creates a reservation, and shows the scheduler selecting and leasing a matching device.
+
+```bash
+npm run example
+```
+
 See:
 
 - [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md)

@@ -15,6 +15,7 @@
   "author": "Jonathan Schaffer",
   "scripts": {
     "dev": "tsx src/index.ts",
+    "example": "tsx examples/basic-scheduling.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
