@@ -102,7 +102,7 @@ describe('DeviceLease', () => {
     );
   });
 
-  it('release a device lease', () => {
+  it('releases a device lease', () => {
     const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
 
     addRokuDevice(deviceRegistry);
@@ -157,7 +157,29 @@ describe('DeviceLease', () => {
     expect(() => leaseRegistry.release('test-lease-id')).toThrow(`Unknown lease: test-lease-id`);
 
     const device = deviceRegistry.get('device-001');
+
     expect(device?.status).toBe('reserved');
     expect(device?.reservedBy).toBe(lease.id);
+  });
+
+  it('allows a new lease after a previous lease is released', () => {
+    const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
+
+    addRokuDevice(deviceRegistry, 'device-001');
+    addRokuDevice(deviceRegistry, 'device-002');
+
+    const reservation = createReservation(reservationRegistry, 1);
+
+    reservationRegistry.transitionStatus(reservation.id, 'active');
+
+    const firstLease = leaseRegistry.acquire(reservation.id, 'device-001', 'developer-a');
+
+    leaseRegistry.release(firstLease.id);
+
+    const secondLease = leaseRegistry.acquire(reservation.id, 'device-002', 'developer-a');
+
+    expect(secondLease.deviceId).toBe('device-002');
+    expect(deviceRegistry.get('device-001')?.status).toBe('available');
+    expect(deviceRegistry.get('device-002')?.status).toBe('reserved');
   });
 });
