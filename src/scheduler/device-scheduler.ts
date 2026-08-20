@@ -10,7 +10,7 @@ export class DeviceScheduler {
     private readonly leaseRegistry: LeaseRegistry,
   ) {}
 
-  schedule(reservationId: string, acquiredBy: string): DeviceLease {
+  schedule(reservationId: string, acquiredBy: string): DeviceLease[] {
     const reservation = this.reservationRegistry.get(reservationId);
 
     if (!reservation) {
@@ -19,12 +19,22 @@ export class DeviceScheduler {
 
     const devices = this.deviceRegistry.findAvailable(reservation.criteria);
 
-    const device = devices[0];
+    const devicesToLease = devices.slice(0, reservation.quantity);
 
-    if (!device) {
-      throw new Error(`No devices available for reservation ${reservationId}`);
+    if (devicesToLease.length < reservation.minimumQuantity) {
+      throw new Error(
+        `Reservation ${reservationId} requires at least ` +
+        `${reservation.minimumQuantity} devices, but only ` +
+        `${devicesToLease.length} are available`,
+      );
     }
 
-    return this.leaseRegistry.acquire(reservation.id, device.id, acquiredBy);
+    return devicesToLease.map((device) =>
+      this.leaseRegistry.acquire(
+        reservation.id,
+        device.id,
+        acquiredBy,
+      )
+    );
   }
 }

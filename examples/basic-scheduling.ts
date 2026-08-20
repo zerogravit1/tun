@@ -28,8 +28,8 @@ const reservation = reservationRegistry.create({
   criteria: {
     platform: 'webos',
   },
-  quantity: 1,
-  minimumQuantity: 1,
+  quantity: 3,
+  minimumQuantity: 2,
   startsAt: now,
   expiresAt: twoHoursFromNow,
   priority: 'normal',

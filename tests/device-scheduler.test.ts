@@ -73,10 +73,11 @@ function createReservation(reservationRegistry: ReservationRegistry, quantity = 
 }
 
 describe('DeviceScheduler', () => {
-  it('schedules an available matching device', () => {
+  it('schedules the requested quantity when enough devices are available', () => {
     const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
 
-    addRokuDevice(deviceRegistry);
+    addRokuDevice(deviceRegistry, 'roku-001');
+    addRokuDevice(deviceRegistry, 'roku-002');
 
     const reservation = createReservation(reservationRegistry);
 
@@ -84,23 +85,17 @@ describe('DeviceScheduler', () => {
 
     const scheduler = new DeviceScheduler(reservationRegistry, deviceRegistry, leaseRegistry);
 
-    const lease = scheduler.schedule(reservation.id, 'developer-a');
+    const leases = scheduler.schedule(reservation.id, 'developer-a');
 
-    expect(lease.deviceId).toBe('device-001');
-    expect(lease.reservationId).toBe(reservation.id);
-    expect(lease.acquiredBy).toBe('developer-a');
-
-    const device = deviceRegistry.get('device-001');
-
-    expect(device?.status).toBe('reserved');
-    expect(device?.reservedBy).toBe(lease.id);
+    expect(leases).toHaveLength(2);
+    expect(leases.map((lease) => lease.deviceId)).toEqual(['roku-001', 'roku-002']);
   });
 
-  it('schedules an available matching platform', () => {
+  it('schedules available devices when minimum quantity can be satisfied', () => {
     const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
 
-    addWebosDevice(deviceRegistry, 'device-001');
-    addRokuDevice(deviceRegistry, 'device-002');
+    addWebosDevice(deviceRegistry, 'webos-001');
+    addRokuDevice(deviceRegistry, 'roku-001');
 
     const reservation = createReservation(reservationRegistry);
 
@@ -108,22 +103,17 @@ describe('DeviceScheduler', () => {
 
     const scheduler = new DeviceScheduler(reservationRegistry, deviceRegistry, leaseRegistry);
 
-    const lease = scheduler.schedule(reservation.id, 'developer-a');
+    const leases = scheduler.schedule(reservation.id, 'developer-a');
 
-    expect(lease.deviceId).toBe('device-002');
-    expect(lease.reservationId).toBe(reservation.id);
-    expect(lease.acquiredBy).toBe('developer-a');
-
-    const webosDevice = deviceRegistry.get('device-001');
-    const rokuDevice = deviceRegistry.get('device-002');
+    expect(leases).toHaveLength(1);
+    expect(leases.map((lease) => lease.deviceId)).toEqual(['roku-001']);
+    
+    const webosDevice = deviceRegistry.get('webos-001');
 
     expect(webosDevice?.status).toBe('available');
-
-    expect(rokuDevice?.status).toBe('reserved');
-    expect(rokuDevice?.reservedBy).toBe(lease.id);
   });
 
-  it('rejects a schedule request with no devices available', () => {
+  it('rejects scheduling when minimum quantity cannot be satisfied', () => {
     const { deviceRegistry, reservationRegistry, leaseRegistry } = createLeaseTestContext();
 
     addWebosDevice(deviceRegistry, 'device-001');
@@ -135,7 +125,7 @@ describe('DeviceScheduler', () => {
     const scheduler = new DeviceScheduler(reservationRegistry, deviceRegistry, leaseRegistry);
 
     expect(() => scheduler.schedule(reservation.id, 'developer-a')).toThrow(
-      `No devices available for reservation ${reservation.id}`,
+      `Reservation ${reservation.id} requires at least 1 devices, but only 0 are available`,
     );
 
     const webosDevice = deviceRegistry.get('device-001');

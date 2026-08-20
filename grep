@@ -1,0 +1,104 @@
+./src/fleet/virtual-fleet.ts:import { Device } from '../domain/device.js';
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/fleet/virtual-fleet.ts:    supportedOperations: ['device/info', 'operations/list', 'health-check/get', 'applications/launch'],
+./src/index.ts:import { DeviceRegistry } from './registry/device-registry.js';
+./src/index.ts:for (const device of virtualFleet) {
+./src/index.ts:  registry.upsert(device);
+./src/registry/device-registry.ts:import { DeviceCriteria } from '../domain/device-cohort.js';
+./src/registry/device-registry.ts:} from '../domain/device-state-transition.js';
+./src/registry/device-registry.ts:import type { Device, DeviceStatus } from '../domain/device.js';
+./src/registry/device-registry.ts:  private readonly devices = new Map<string, Device>();
+./src/registry/device-registry.ts:  upsert(device: Device): void {
+./src/registry/device-registry.ts:    this.devices.set(device.id, structuredClone(device));
+./src/registry/device-registry.ts:  get(deviceId: string): Device | undefined {
+./src/registry/device-registry.ts:    const device = this.devices.get(deviceId);
+./src/registry/device-registry.ts:    return device ? structuredClone(device) : undefined;
+./src/registry/device-registry.ts:    return [...this.devices.values()].map((device) => structuredClone(device));
+./src/registry/device-registry.ts:    return this.find(criteria).filter((device) => device.status === 'available');
+./src/registry/device-registry.ts:    return this.list().filter((device) => {
+./src/registry/device-registry.ts:      if (criteria.platform && device.platform !== criteria.platform) return false;
+./src/registry/device-registry.ts:      if (criteria.kind && device.kind !== criteria.kind) return false;
+./src/registry/device-registry.ts:      if (criteria.performanceClass && device.performanceClass !== criteria.performanceClass) return false;
+./src/registry/device-registry.ts:      if (criteria.resolution && !device.capabilities.resolutions.includes(criteria.resolution)) return false;
+./src/registry/device-registry.ts:      if (criteria.hdr && !device.capabilities.hdrFormats.includes(criteria.hdr)) return false;
+./src/registry/device-registry.ts:      if (criteria.codec && !device.capabilities.codecs.includes(criteria.codec)) return false;
+./src/registry/device-registry.ts:      if (criteria.games !== undefined && device.capabilities.games !== criteria.games) return false;
+./src/registry/device-registry.ts:      if (criteria.minimumMemoryMb !== undefined && (device.capabilities.memoryMb ?? 0) < criteria.minimumMemoryMb)
+./src/registry/device-registry.ts:        !criteria.requiredOperations.every((operation) => device.supportedOperations.includes(operation))
+./src/registry/device-registry.ts:  reserve(deviceId: string, leaseId: string): Device {
+./src/registry/device-registry.ts:    const device = this.requireDevice(deviceId);
+./src/registry/device-registry.ts:    if (device.status !== 'available') {
+./src/registry/device-registry.ts:      throw new Error(`Device ${deviceId} is not available`);
+./src/registry/device-registry.ts:    device.status = 'reserved';
+./src/registry/device-registry.ts:    device.reservedBy = leaseId;
+./src/registry/device-registry.ts:    return structuredClone(device);
+./src/registry/device-registry.ts:  release(deviceId: string, leaseId: string): Device {
+./src/registry/device-registry.ts:    const device = this.requireDevice(deviceId);
+./src/registry/device-registry.ts:    if (device.status !== 'reserved' || device.reservedBy !== leaseId) {
+./src/registry/device-registry.ts:      throw new Error(`Lease ${leaseId} does not own device ${deviceId}`);
+./src/registry/device-registry.ts:    device.status = 'available';
+./src/registry/device-registry.ts:    delete device.reservedBy;
+./src/registry/device-registry.ts:    return structuredClone(device);
+./src/registry/device-registry.ts:  quarantine(deviceId: string): Device {
+./src/registry/device-registry.ts:    const device = this.requireDevice(deviceId);
+./src/registry/device-registry.ts:    device.status = 'quarantined';
+./src/registry/device-registry.ts:    delete device.reservedBy;
+./src/registry/device-registry.ts:    return structuredClone(device);
+./src/registry/device-registry.ts:    deviceId: string,
+./src/registry/device-registry.ts:    const device = this.requireDevice(deviceId);
+./src/registry/device-registry.ts:    const from = device.status;
+./src/registry/device-registry.ts:      throw new Error(`Cannot transition device ${deviceId} from ${from} to ${to}`);
+./src/registry/device-registry.ts:    device.status = to;
+./src/registry/device-registry.ts:      deviceId,
+./src/registry/device-registry.ts:  private requireDevice(deviceId: string): Device {
+./src/registry/device-registry.ts:    const device = this.devices.get(deviceId);
+./src/registry/device-registry.ts:    if (!device) {
+./src/registry/device-registry.ts:      throw new Error(`Unknown device: ${deviceId}`);
+./src/registry/device-registry.ts:    return device;
+./src/registry/reservation-registry.ts:import type { CreateReservationRequest, DeviceReservation, ReservationStatus } from '../domain/device-reservation.js';
+./src/registry/reservation-registry.ts:      throw new Error(`requested device quantity must be at least 1`);
+./src/registry/reservation-registry.ts:      throw new Error(`requested minimum device quantity must be at least 1`);
+./src/registry/lease-registry.ts:import { DeviceLease } from '../domain/device-reservation.js';
+./src/registry/lease-registry.ts:import { DeviceRegistry } from './device-registry.js';
+./src/registry/lease-registry.ts:    private readonly deviceRegistry: DeviceRegistry,
+./src/registry/lease-registry.ts:  acquire(reservationId: string, deviceId: string, acquiredBy: string): DeviceLease {
+./src/registry/lease-registry.ts:    const device = this.deviceRegistry.get(deviceId);
+./src/registry/lease-registry.ts:    if (!device) {
+./src/registry/lease-registry.ts:      throw new Error(`Unknown device: ${deviceId}`);
+./src/registry/lease-registry.ts:    const availableMatchingDevices = this.deviceRegistry.findAvailable(reservation.criteria);
+./src/registry/lease-registry.ts:    const deviceCanBeLeased = availableMatchingDevices.some((candidate) => candidate.id === deviceId);
+./src/registry/lease-registry.ts:    if (!deviceCanBeLeased) {
+./src/registry/lease-registry.ts:      throw new Error(`Device ${deviceId} is not available for reservation ${reservationId}`);
+./src/registry/lease-registry.ts:      throw new Error(`Reservation ${reservationId} has reached its device quantity of ${reservation.quantity}`);
+./src/registry/lease-registry.ts:      deviceId,
+./src/registry/lease-registry.ts:    this.deviceRegistry.reserve(deviceId, lease.id);
+./src/registry/lease-registry.ts:    this.deviceRegistry.release(lease.deviceId, lease.id);
+./src/scheduler/device-scheduler.ts:import type { DeviceLease } from '../domain/device-reservation.js';
+./src/scheduler/device-scheduler.ts:import { DeviceRegistry } from '../registry/device-registry.js';
+./src/scheduler/device-scheduler.ts:    private readonly deviceRegistry: DeviceRegistry,
+./src/scheduler/device-scheduler.ts:    const devices = this.deviceRegistry.findAvailable(reservation.criteria);
+./src/scheduler/device-scheduler.ts:    const device = devices[0];
+./src/scheduler/device-scheduler.ts:    if (!device) {
+./src/scheduler/device-scheduler.ts:      throw new Error(`No devices available for reservation ${reservationId}`);
+./src/scheduler/device-scheduler.ts:    return this.leaseRegistry.acquire(reservation.id, device.id, acquiredBy);
+./src/domain/device-cohort.ts:import type { Codec, DeviceKind, HdrFormat, PerformanceClass, Resolution } from './device.js';
+./src/domain/evaluation.ts:import { Codec, HdrFormat } from './device.js';
+./src/domain/device-state-transition.ts:import type { DeviceStatus } from './device.js';
+./src/domain/device-state-transition.ts:  deviceId: string;
+./src/domain/device-reservation.ts:import type { DeviceCriteria } from './device-cohort.js';
+./src/domain/device-reservation.ts:  deviceId: string;
+./src/domain/reservation-state-transition.ts:import { ReservationStatus } from './device-reservation.js';
