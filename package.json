@@ -12,6 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/zerogravit1/tun.git"
   },
+  "license": "Apache-2.0",
   "author": "Jonathan Schaffer",
   "scripts": {
     "dev": "tsx src/index.ts",

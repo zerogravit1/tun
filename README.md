@@ -98,3 +98,10 @@ See:
 - [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md)
 - [`docs/architecture.md`](docs/architecture.md)
 - [`docs/roadmap.md`](docs/roadmap.md)
+
+## License
+
+Copyright © 2026 Jonathan Schaffer.
+
+Licensed under the Apache License, Version 2.0.
+See [LICENSE](LICENSE) for details.
